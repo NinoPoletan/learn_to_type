@@ -1,6 +1,6 @@
-from utils import StandardFuzzySets, CalculatedFuzzySet, SimpleDomain, DomainElement, Operations, MutableFuzzySet
+from utils import StandardFuzzySets, CalculatedFuzzySet, SimpleDomain, DomainElement, Operations, MutableFuzzySet, argmax
 import sys
-
+import json
 
 class FuzzySpeed:
     def __init__(self):
@@ -29,14 +29,15 @@ class FuzzySpeed:
         b = 75
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.gamma_function(a, b))
 
-    def slow_v(self,value):
+    def slow_(self, value):
         return self.slow().get_value_at(DomainElement(value))
 
-    def medium_speed_v(self,value):
+    def medium_speed_(self, value):
         return self.medium_speed().get_value_at(DomainElement(value))
 
-    def fast_v(self,value):
+    def fast_(self, value):
         return self.fast().get_value_at(DomainElement(value))
+
 
 class FuzzyAcc:
     def __init__(self):
@@ -59,14 +60,25 @@ class FuzzyAcc:
         b = 65
         c = 85
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.lambda_function(a, b, c))
+
     def excellent(self):
         a = 80
         b = 90
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.gamma_function(a, b))
 
+    def bad_(self, value):
+        return self.bad().get_value_at(DomainElement(value))
+
+    def good_(self, value):
+        return self.good().get_value_at(DomainElement(value))
+
+    def excellent_(self, value):
+        return self.excellent().get_value_at(DomainElement(value))
+
+
 class FuzzyDifficulty:
     def __init__(self):
-        self.domain = SimpleDomain(100, 200)
+        self.domain = SimpleDomain(0, 101)
 
     def get_set_by_name(self, method_name):
         if hasattr(self, method_name):
@@ -74,7 +86,6 @@ class FuzzyDifficulty:
             return method()
         else:
             raise AttributeError(f"No method named {method_name} found in {self.__class__.__name__}")
-
 
     def very_easy(self):
         a = 120
@@ -104,6 +115,20 @@ class FuzzyDifficulty:
         b = 180
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.gamma_function(a, b))
 
+    def very_easy_(self, value):
+        return self.very_easy().get_value_at(DomainElement(value))
+
+    def easy_(self, value):
+        return self.easy().get_value_at(DomainElement(value))
+
+    def medium_(self, value):
+        return self.medium().get_value_at(DomainElement(value))
+
+    def hard_(self, value):
+        return self.hard().get_value_at(DomainElement(value))
+
+    def very_hard_(self, value):
+        return self.very_hard().get_value_at(DomainElement(value))
 
 
 class FuzzyOutputDifficulty:
@@ -127,12 +152,28 @@ class FuzzyOutputDifficulty:
         b = 50
         c = 80
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.lambda_function(a, b, c))
+
     def harder(self):
         a = 60
         b = 75
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.gamma_function(a, b))
 
-class FuzzyWordOutput:
+    def easier_(self, value):
+        return self.easier().get_value_at(DomainElement(value))
+
+    def stay_(self, value):
+        return self.stay().get_value_at(DomainElement(value))
+
+    def harder_(self, value):
+        return self.harder().get_value_at(DomainElement(value))
+
+    def fuzzy_string_output(self, value):
+        strings = ["easier", "stay", "harder"]
+        index = argmax([self.easier_(value), self.stay_(value), self.harder_(value)])
+        return strings[index]
+
+
+class FuzzyLetterOutput:
     def __init__(self):
         self.domain = SimpleDomain(0, 101)
 
@@ -153,15 +194,26 @@ class FuzzyWordOutput:
         b = 70
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.gamma_function(a, b))
 
+    def okay_(self, value):
+        return self.okay().get_value_at(DomainElement(value))
+
+    def improve_(self, value):
+        return self.improve().get_value_at(DomainElement(value))
+
+    def fuzzy_string_output(self, value):
+        value = int(value)
+        strings = ["okay", "improve"]
+        index = argmax([self.okay_(value), self.improve_(value)])
+        return strings[index]
 
 
 def defuzzify_center_of_mass(aggregated_output, type_system):
-    if type_system == "difficulty":
-        error_log = open('diff_.log', 'a')
+    if type_system == "word":
+        error_log = open('diff_word_.log', 'a')
         gen = FuzzyOutputDifficulty()
     else:
-        error_log = open('word_.log', 'a')
-        gen = FuzzyWordOutput()
+        error_log = open('letter_.log', 'a')
+        gen = FuzzyLetterOutput()
 
     sys.stderr = error_log
     result = MutableFuzzySet(gen.domain)
@@ -179,53 +231,78 @@ def defuzzify_center_of_mass(aggregated_output, type_system):
         denominator += membership_value
 
     centroid = int(numerator / denominator)
-    print(centroid, file=sys.stderr)
     return centroid
 
 
-def difficulty_control_system(S, D_W, ACC_G, ACC_W):
+def word_difficulty_control_system(S, D_W, ACC_G):
     s = FuzzySpeed()
     a = FuzzyAcc()
     d = FuzzyDifficulty()
+
+    S, D_W, ACC_G = int(S), int(D_W), int(ACC_G)
 
     rules = {
         'easier': max(
+            min(s.slow_(S), d.medium_(D_W)),
+            min(a.bad_(ACC_G), d.medium_(D_W)),
+
         ),
         'stay': max(
- #           min(s.medium_speed_v(V),d.very_close_v(DK)),
+            min(s.medium_speed_(S), d.medium_(D_W)),
+            a.good_(ACC_G),
         ),
         'harder': max(
-            0,
-  #          s.slow_v(V)
+            min(s.fast_(S), d.very_easy_(D_W)),
+            min(a.excellent_(ACC_G), d.very_easy_(D_W)),
         ),
     }
-    return defuzzify_center_of_mass(rules, "difficulty")
+    od = FuzzyOutputDifficulty()
+    return od.fuzzy_string_output(defuzzify_center_of_mass(rules, "word"))
 
 
-def word_control_system(S, D_W, ACC_G, ACC_W):
-    s = FuzzySpeed()
+def letter_control_system(acc_l):
     a = FuzzyAcc()
-    d = FuzzyDifficulty()
+
+    acc_l = int(acc_l)
 
     rules = {
         'okay': max(
+            a.good_(acc_l),
+            a.excellent_(acc_l)
         ),
         'improve': max(
- #           min(s.medium_speed_v(V),d.very_close_v(DK)),
+            0,
+            a.bad_(acc_l)
         ),
 
     }
-    return defuzzify_center_of_mass(rules, "word")
+    lo = FuzzyLetterOutput()
+
+    return lo.fuzzy_string_output(defuzzify_center_of_mass(rules, "letter"))
 
 
+def read_json_file(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            return json.load(file)
+    except json.JSONDecodeError:
+        print("Error: The file is not a valid JSON.")
+    except FileNotFoundError:
+        print(f"Error: The file {file_path} was not found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 
+def run_whole_control_system():
+    json_object = read_json_file("input_sample.json")
+    S, D_W, ACC_G, ACC_L = json_object['speed'], json_object['difficulty_word'], json_object['accuracy_global'], json_object['accuracy_letters']
+    output_word_diff = word_difficulty_control_system(S, D_W, ACC_G)
 
-#type_rule = "sum"
-#type_rule = "multiply"
+    output_letter_dict = {}
+    for letter, acc in ACC_L.items():
+        output_letter_dict[letter] = letter_control_system(acc)
 
-#while True:
-    #akcel = motor_control_system(L, LK, DK, D, V, S,type_rule)
-    #kormilo = stear_control_system(L, LK, DK, D, V, S,type_rule)
-    #akcel = "100"
-    #print(akcel, kormilo, flush=True)
+    return output_word_diff, output_letter_dict
+
+if __name__ == '__main__':
+    print(run_whole_control_system())

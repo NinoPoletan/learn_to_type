@@ -1,6 +1,10 @@
 from abc import ABC, abstractmethod
 from math import prod
 
+def argmax(sequence):
+    if not sequence:
+        return None  # or raise an exception if sequence is empty
+    return max(enumerate(sequence), key=lambda x: x[1])[0]
 
 class DomainElement:
     def __init__(self, values):
