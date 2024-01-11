@@ -293,7 +293,7 @@ def read_json_file(file_path):
         print(f"An error occurred: {e}")
 
 
-def run_whole_control_system():
+def run_whole_control_system_file():
     json_object = read_json_file("input_sample.json")
     S, D_W, ACC_G, ACC_L = json_object['speed'], json_object['difficulty_word'], json_object['accuracy_global'], json_object['accuracy_letters']
     output_word_diff = word_difficulty_control_system(S, D_W, ACC_G)
@@ -304,5 +304,17 @@ def run_whole_control_system():
 
     return output_word_diff, output_letter_dict
 
+
+def run_whole_control_system_json(input_json):
+    S, D_W, ACC_G, ACC_L = input_json['speed'], input_json['difficulty_word'], input_json['accuracy_global'], input_json['accuracy_letters']
+    output_word_diff = word_difficulty_control_system(S, D_W, ACC_G)
+
+    output_letter_dict = {}
+    for letter, acc in ACC_L.items():
+        output_letter_dict[letter] = letter_control_system(acc)
+
+    return output_word_diff, output_letter_dict
+
+
 if __name__ == '__main__':
-    print(run_whole_control_system())
+    print(run_whole_control_system_file())
