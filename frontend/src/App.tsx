@@ -14,6 +14,8 @@ import WordContainer from './components/WordContainer';
 import WordWrapper from './components/WordWrapper';
 import MobileNotSupported from './components/MobileNotSupported';
 
+
+
 function App() {
   const { systemTheme } = useThemeContext();
   const {
@@ -36,17 +38,29 @@ function App() {
     setTime,
   } = useSystem();
 
+
   const isMobile = useDetectDevice();
-
-  console.log("Accuracy: " + results.accuracy)
-  console.log("WPM: " + results.wpm)
-  console.log("CPM: " + results.cpm)
-  console.log(results.letterMap)
-  console.log(results.error)
-  console.log(results.difficulty)
-
   
+// Constructing the JSON object
 
+  function getAccuracyLetters ( lm ) {
+    let letMap = Object.fromEntries(lm);
+    for (let key in letMap) {
+      letMap[key] = letMap[key][2];
+    }
+
+    return letMap;
+  }
+
+  const jsonObject = {
+    "speed": results.wpm,
+    "difficulty_word": results.difficulty,
+    "accuracy_global": results.accuracy,
+    "accuracy_letters": getAccuracyLetters(results.letterMap),
+  };
+
+  console.log(JSON.stringify(jsonObject, null, 2));
+  console.log(typeof(results.letterMap));
 
   return (
     <div

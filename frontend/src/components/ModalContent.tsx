@@ -142,7 +142,7 @@ const ModalContent = ({ totalTime, history, results }: ModalContentProps) => {
       </div>
 
       <div className='flex-[3] px-5'>
-        <div className='grid grid-flow-col grid-rows-6 justify-center gap-4 '>
+        <div className='grid grid-flow-col grid-rows-10 justify-center gap-4 '>
             
             {accRes(results.letterMap)}
         
