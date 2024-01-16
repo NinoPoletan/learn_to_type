@@ -40,7 +40,7 @@ export const useSystem = () => {
 
     
     try {
-      const response = await fetch('http://localhost:5000/run-fuzzy', {
+      const response = await fetch('http://localhost:5000/fuzzy_gtp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -157,7 +157,6 @@ export const useSystem = () => {
     sendRequest(accuracy, letterMap, wpm, difficulty).then((data) => {
       console.log(data);
     });
-    
     restartTest();
     
   }

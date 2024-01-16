@@ -190,14 +190,14 @@ export const calculateAccuracy = (expectedWord: string, typedWord: string) => {
       if (value) {
         value[0]++;
         value[1]++;
-        value[2] = value[0] / value[1];
+        value[2] = (value[0] / value[1])* 100;
         letterMap.set(expectedWord[i], value);
       }
     } else {
       let value = letterMap.get(expectedWord[i]);
       if (value) {
         value[1]++;
-        value[2] = value[0] / value[1];
+        value[2] = (value[0] / value[1]) * 100;
         letterMap.set(expectedWord[i], value);
       }
     }

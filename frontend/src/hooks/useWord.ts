@@ -23,6 +23,8 @@ export const useWord = (numberOfWords: number) => {
         if (erase) eraseWord(genWord);
         else appendWord(genWord);
         return genWord;
+
+
       });
     },
     [numberOfWords, appendWord, eraseWord]
