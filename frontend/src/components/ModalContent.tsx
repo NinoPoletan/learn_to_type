@@ -38,7 +38,6 @@ const ModalContent = ({ totalTime, history, results }: ModalContentProps) => {
   function accRes(letterMap: Map<string, number[]>) {
     const res = [];
     for (const [key, value] of letterMap) {
-      if (value[1] === 0) continue;
       res.push(
         <div className='flex items-center gap-2' key={key}>
           <div className='flex items-center gap-2'>

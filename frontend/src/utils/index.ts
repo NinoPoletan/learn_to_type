@@ -203,7 +203,14 @@ export const calculateAccuracy = (expectedWord: string, typedWord: string) => {
     }
   }
 
-  //console//.log("letterMap: ", letterMap);
+  //loop through letterMap and remove all letters that have not been typed
+  letterMap.forEach((value, key) => {
+    if (value[1] === 0) {
+      letterMap.delete(key);
+    }
+  });
+
+  //console.log("letterMap: ", letterMap);
 
   const accuracyMetrics: AccuracyMetrics = {
     correctChars,

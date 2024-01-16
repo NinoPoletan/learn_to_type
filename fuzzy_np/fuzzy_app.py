@@ -1,8 +1,10 @@
 import requests
 from flask import Flask, request, jsonify
 from fuzzy_system import run_whole_control_system_json
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 @app.route('/run-fuzzy', methods=['POST'])
 def run_fuzzy():
     try:

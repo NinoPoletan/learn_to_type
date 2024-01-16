@@ -6,7 +6,7 @@ from openai import OpenAI
 
 app = Flask(__name__)
 
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = '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'
 
 client = OpenAI(
   api_key=os.environ['OPENAI_API_KEY'],

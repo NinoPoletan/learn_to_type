@@ -19,7 +19,7 @@ import type { HistoryType } from '../types';
 export const useSystem = () => {
   // Constructing the JSON object
 
-  function getAccuracyLetters ( lm ) {
+  function getAccuracyLetters ( lm: object ) {
     let letMap = Object.fromEntries(lm);
     for (let key in letMap) {
       letMap[key] = letMap[key][2];
@@ -29,15 +29,16 @@ export const useSystem = () => {
   }
 
 
-  async function sendRequest(results) {
+  async function sendRequest(accuracy: number, letterMap: object, wpm: number, difficulty: number) {
     const jsonObject = {
-      "speed": results.wpm,
+      "speed": wpm,
       "theme": "dune",
-      "difficulty_word": results.difficulty,
-      "accuracy_global": results.accuracy,
-      "accuracy_letters": getAccuracyLetters(results.letterMap),
+      "difficulty_word": difficulty,
+      "accuracy_global": accuracy,
+      "accuracy_letters": getAccuracyLetters(letterMap),
     };
 
+    
     try {
       const response = await fetch('http://localhost:5000/run-fuzzy', {
         method: 'POST',
@@ -45,20 +46,23 @@ export const useSystem = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(jsonObject),
-        mode: 'no-cors',
       });
-  
+    
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-  
+    
       const data = await response.json();
-      console.log('Response data:', data);
-      // Process the response data as needed
+      //console.log(data);
+
+      return data;
     } catch (error) {
-      console.error('Error sending request:', error);
+      console.error('Fetch error:', error);
     }
+    
   }
+
+  
 
   const [results, setResults] = useState<Results>({
     difficulty: 0,
@@ -150,7 +154,9 @@ export const useSystem = () => {
     });
 
     openModal('result');
-    sendRequest(results);
+    sendRequest(accuracy, letterMap, wpm, difficulty).then((data) => {
+      console.log(data);
+    });
     
     restartTest();
     
