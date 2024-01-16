@@ -17,6 +17,49 @@ import type { Results } from '../types';
 import type { HistoryType } from '../types';
 
 export const useSystem = () => {
+  // Constructing the JSON object
+
+  function getAccuracyLetters ( lm ) {
+    let letMap = Object.fromEntries(lm);
+    for (let key in letMap) {
+      letMap[key] = letMap[key][2];
+    }
+
+    return letMap;
+  }
+
+
+  async function sendRequest(results) {
+    const jsonObject = {
+      "speed": results.wpm,
+      "theme": "dune",
+      "difficulty_word": results.difficulty,
+      "accuracy_global": results.accuracy,
+      "accuracy_letters": getAccuracyLetters(results.letterMap),
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/run-fuzzy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(jsonObject),
+        mode: 'no-cors',
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log('Response data:', data);
+      // Process the response data as needed
+    } catch (error) {
+      console.error('Error sending request:', error);
+    }
+  }
+
   const [results, setResults] = useState<Results>({
     difficulty: 0,
     accuracy: 0,
@@ -107,6 +150,8 @@ export const useSystem = () => {
     });
 
     openModal('result');
+    sendRequest(results);
+    
     restartTest();
     
   }

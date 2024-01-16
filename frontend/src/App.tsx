@@ -41,27 +41,6 @@ function App() {
 
   const isMobile = useDetectDevice();
   
-// Constructing the JSON object
-
-  function getAccuracyLetters ( lm ) {
-    let letMap = Object.fromEntries(lm);
-    for (let key in letMap) {
-      letMap[key] = letMap[key][2];
-    }
-
-    return letMap;
-  }
-
-  const jsonObject = {
-    "speed": results.wpm,
-    "difficulty_word": results.difficulty,
-    "accuracy_global": results.accuracy,
-    "accuracy_letters": getAccuracyLetters(results.letterMap),
-  };
-
-  console.log(JSON.stringify(jsonObject, null, 2));
-  console.log(typeof(results.letterMap));
-
   return (
     <div
       className='h-screen w-full overflow-y-auto'

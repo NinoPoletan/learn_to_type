@@ -7,6 +7,7 @@ app = Flask(__name__)
 def run_fuzzy():
     try:
         # Extract JSON data from the request
+        print(request)
         input_data = request.get_json()
 
         # Call your control system function with the new data

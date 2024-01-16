@@ -64,8 +64,6 @@ export const calculateTextDifficulty = (position: number, text: string) => {
     words.pop();
   }
 
-  console.log(words);
-
   let simpleWords = 0;
   let mediumWords = 0;
   let hardWords = 0;
@@ -79,10 +77,6 @@ export const calculateTextDifficulty = (position: number, text: string) => {
       simpleWords++;
     }
   });
-
-  console.log("simpleWords: ", simpleWords);  //tezina je 1
-  console.log("mediumWords: ", mediumWords);  // tezina je 3
-  console.log("hardWords: ", hardWords);      // tezina je 6
 
   let difficulty = ((((simpleWords/words.length)*100) + 3*((mediumWords/words.length)*100) + 6*((hardWords/words.length)*100))/3);
 
