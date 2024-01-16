@@ -19,12 +19,12 @@ import type { HistoryType } from '../types';
 export const useSystem = () => {
   // Constructing the JSON object
 
-  function getAccuracyLetters ( lm: object ) {
-    let letMap = Object.fromEntries(lm);
+  function getAccuracyLetters ( lm: { [key: string]: any[] } ) {
+    let letMap: { [key: string]: any } = { ...lm };
     for (let key in letMap) {
       letMap[key] = letMap[key][2];
     }
-
+  
     return letMap;
   }
 
@@ -35,12 +35,12 @@ export const useSystem = () => {
       "theme": "dune",
       "difficulty_word": difficulty,
       "accuracy_global": accuracy,
-      "accuracy_letters": getAccuracyLetters(letterMap),
+      "accuracy_letters": getAccuracyLetters(letterMap as { [key: string]: any[] }),
     };
 
     
     try {
-      const response = await fetch('http://localhost:5000/fuzzy_gtp', {
+      const response = await fetch('/fuzzy/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

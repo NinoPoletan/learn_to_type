@@ -2,7 +2,6 @@ import { useDetectDevice } from './hooks/useDetectDevice';
 import { useSystem } from './hooks/useSystem';
 import { useThemeContext } from './hooks/useTheme';
 
-import LoginPage from './components/Login';
 import Countdown from './components/Countdown';
 import Header from './components/Header';
 import ModalComponent from './components/Modal';
@@ -24,7 +23,6 @@ function App() {
     word,
     wordContainerFocused,
     modalIsOpen,
-    loginModal,
     history,
     time,
     results,
@@ -34,7 +32,6 @@ function App() {
     restartTest,
     checkCharacter,
     closeModal,
-    openModal,
     setTime,
   } = useSystem();
 
@@ -59,8 +56,6 @@ function App() {
           <>
             <Header
               restart={restartTest}
-              openLoginModal={openModal}
-              closeLoginModal={closeModal}
             />
             <TimeCategory
               time={time}
@@ -92,14 +87,6 @@ function App() {
                 results={results}
                 history={history}
               />
-            </ModalComponent>
-            
-            <ModalComponent
-              type='login'
-              isOpen={loginModal}
-              onRequestClose={closeModal}
-            >
-              <LoginPage />
             </ModalComponent>
           </>
         )}

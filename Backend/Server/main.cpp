@@ -7,15 +7,6 @@ int main(int argc, char* argv[])
 #else
     drogon::app().loadConfigFile("bin/config.json");
 #endif
-
-    drogon::HttpAppFramework::instance()
-        .registerHandler("/",
-                         [=](const drogon::HttpRequestPtr& req,
-                             std::function<void (const drogon::HttpResponsePtr&)>&& callback)
-                         {
-                             const auto resp = drogon::HttpResponse::newRedirectionResponse("/home/");
-                             callback(resp);
-                         });
     
     drogon::app().run();
     return 0;

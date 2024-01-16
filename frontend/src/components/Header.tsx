@@ -1,5 +1,5 @@
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-
 import { useThemeContext } from '../hooks/useTheme';
 
 import { MdOutlineAccountCircle } from "react-icons/md";
@@ -10,8 +10,6 @@ import ThemeDropdown from './ThemeDropdown';
 
 type HeaderProps = {
   restart: () => void;
-  openLoginModal: (str: string) => void;
-  closeLoginModal: (str: string) => void;
 };
 
 const StyledSvg = styled.svg`
@@ -20,8 +18,42 @@ const StyledSvg = styled.svg`
   color: ${({ theme }) => theme.text.title};
 `;
 
-const Header = ({ restart, openLoginModal }: HeaderProps) => {
+const getCookieValue = (name: string): string | null => {
+  const nameString = name + "=";
+  const value = document.cookie.split('; ').find(row => row.startsWith(nameString));
+  
+  return value ? value.split('=')[1] : null;
+};
+
+const decodeCookieValue = (name: string): any | null => {
+  const base64 = getCookieValue(name);
+
+  if (base64) {
+    const decodedValue = atob(base64);
+
+    try {
+      return JSON.parse(decodedValue);
+    } catch (e) {
+      console.error("Error parsing cookie value:", e);
+      return null;
+    }
+  }
+
+  return null;
+};
+
+const deleteCookie = (name: string): void => {
+  document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+const Header = ({ restart }: HeaderProps) => {
   const { systemTheme } = useThemeContext();
+  const [userCookieData, setUserCookieData] = useState<any | null>(null);
+
+  useEffect(() => {
+    const userData = decodeCookieValue('user');
+    setUserCookieData(userData);
+  }, []);
 
   return (
     <header className='flex items-center justify-between py-8'>
@@ -97,15 +129,35 @@ const Header = ({ restart, openLoginModal }: HeaderProps) => {
       <div className='flex gap-4'>
         <ThemeDropdown />
         <Tooltip tooltipId='login'>
-          <div
+          {userCookieData ? (
+            <div
+            data-tooltip-id='logout'
+            data-tooltip-content='Logout'
+            className='cursor-pointer'
+            onClick={() => {
+              window.location.href = '/auth/logout';
+              deleteCookie('user');
+            }}
+            >
+              <MdOutlineAccountCircle className='text-3xl' />
+            </div>
+          ) : (
+            <div
             data-tooltip-id='login'
             data-tooltip-content='Login'
             className='cursor-pointer'
-            onClick={() => openLoginModal('login')}
-          >
-            <MdOutlineAccountCircle className='text-3xl' />
-          </div>
+            onClick={() => {
+              window.location.href = '/auth/login';
+              deleteCookie('user');
+            }}
+            >
+              <MdOutlineAccountCircle className='text-3xl' />
+            </div>
+          )}
         </Tooltip>
+        <div className='flex items-center gap-2'>
+            <p className='font-bold'>{userCookieData ? userCookieData.userinfo.given_name : "Login"}</p>
+        </div>
       </div>
     </header>
   );

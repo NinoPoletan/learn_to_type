@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 
 export const useCountdown = (initialValue: number, interval = 1000) => {
-  const intervalRef = useRef<NodeJS.Timer | null>(null);
+  const intervalRef = useRef<number | null>(null);
   const [countdown, setCountdown] = useState(initialValue);
 
   const startCountdown = useCallback(() => {
@@ -15,7 +15,7 @@ export const useCountdown = (initialValue: number, interval = 1000) => {
 
         return prev;
       });
-    }, interval);
+    }, interval) as unknown as number;
   }, [initialValue]);
 
   const resetCountdown = useCallback(() => {

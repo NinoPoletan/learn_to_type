@@ -1,4 +1,5 @@
 import { MdCenterFocusStrong } from 'react-icons/md';
+import { useState, useEffect } from 'react';
 
 type WordWrapperProps = {
   children: React.ReactNode;
@@ -6,7 +7,38 @@ type WordWrapperProps = {
   setFocused: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+const getCookieValue = (name: string): string | null => {
+  const nameString = name + "=";
+  const value = document.cookie.split('; ').find(row => row.startsWith(nameString));
+  
+  return value ? value.split('=')[1] : null;
+};
+
+const decodeCookieValue = (name: string): any | null => {
+  const base64 = getCookieValue(name);
+
+  if (base64) {
+    const decodedValue = atob(base64);
+
+    try {
+      return JSON.parse(decodedValue);
+    } catch (e) {
+      console.error("Error parsing cookie value:", e);
+      return null;
+    }
+  }
+
+  return null;
+};
+
 const WordWrapper = ({ children, focused, setFocused }: WordWrapperProps) => {
+  const [userCookieData, setUserCookieData] = useState<any | null>(null);
+
+  useEffect(() => {
+    const userData = decodeCookieValue('user');
+    setUserCookieData(userData);
+  }, []);
+
   return (
     <>
       <div
@@ -16,7 +48,7 @@ const WordWrapper = ({ children, focused, setFocused }: WordWrapperProps) => {
       >
         <MdCenterFocusStrong className='text-center text-2xl' />
         <span className={`text-center font-mono text-lg `}>
-          Focus to start typing
+          {userCookieData ? "Focus to start typing" : "Login first"}
         </span>
       </div>
       <div
@@ -24,7 +56,8 @@ const WordWrapper = ({ children, focused, setFocused }: WordWrapperProps) => {
           focused ? 'blur-none' : 'cursor-pointer blur-md'
         } `}
         tabIndex={0}
-        onFocus={() => setFocused(true)}
+        autoFocus={true}
+        onFocus={() => {if (userCookieData) setFocused(true) }}
         onBlur={() => setFocused(false)}
       >
         {children}

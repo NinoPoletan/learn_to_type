@@ -5,9 +5,13 @@ import os
 import requests
 from flask import Flask, request, jsonify
 from openai import OpenAI
+from dotenv import find_dotenv, load_dotenv
+
+ENV_FILE = find_dotenv()
+if ENV_FILE:
+    load_dotenv(ENV_FILE)
 
 app = Flask(__name__)
-os.environ['OPENAI_API_KEY'] = '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'
 client = OpenAI(
     api_key=os.environ['OPENAI_API_KEY'],
 )
