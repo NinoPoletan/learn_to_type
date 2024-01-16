@@ -55,5 +55,5 @@ if __name__ == '__main__':
     app.run(debug=True, port=5001)
 
 
-#export OPENAI_API_KEY='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'
-#set OPENAI_API_KEY=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
+#export OPENAI_API_KEY='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'
+#set OPENAI_API_KEY=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
