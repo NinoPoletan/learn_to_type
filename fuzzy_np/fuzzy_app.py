@@ -11,12 +11,14 @@ def run_fuzzy():
 
         # Call your control system function with the new data
         output_word_diff, output_letter_dict = run_whole_control_system_json(input_data)
+        theme = input_data['theme']
         print(output_word_diff, output_letter_dict)
 
         # Create a dictionary with the results
         results = {
             'word_difficulty': output_word_diff,
-            'letter_difficulty': output_letter_dict
+            'letter_difficulty': output_letter_dict,
+            'theme' : theme,
         }
 
         # Send the results to another local server on port 5001
