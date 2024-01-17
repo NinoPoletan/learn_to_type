@@ -7,14 +7,11 @@ import Countdown from './components/Countdown';
 import Header from './components/Header';
 import ModalComponent from './components/Modal';
 import ModalContent from './components/ModalContent';
-import Restart from './components/Restart';
 import TimeCategory from './components/TimeCategory';
 import UserTyped from './components/UserTyped';
 import WordContainer from './components/WordContainer';
 import WordWrapper from './components/WordWrapper';
 import MobileNotSupported from './components/MobileNotSupported';
-
-
 
 function App() {
   const { systemTheme } = useThemeContext();
@@ -34,13 +31,13 @@ function App() {
     restartTest,
     checkCharacter,
     closeModal,
-    openModal,
     setTime,
+    setNewTheme,
   } = useSystem();
 
 
   const isMobile = useDetectDevice();
-  
+
   return (
     <div
       className='h-screen w-full overflow-y-auto'
@@ -59,8 +56,7 @@ function App() {
           <>
             <Header
               restart={restartTest}
-              openLoginModal={openModal}
-              closeLoginModal={closeModal}
+              changeTheme={setNewTheme}
             />
             <TimeCategory
               time={time}
@@ -80,7 +76,6 @@ function App() {
                 charTyped={charTyped}
               />
             </WordWrapper>
-            <Restart restart={restartTest} />
             
             <ModalComponent
               type='result'

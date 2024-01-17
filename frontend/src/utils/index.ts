@@ -44,7 +44,8 @@ export const isMobile = () => {
   return false;
 };
 
-export const generateWord = (n: number): string => {
+export const generateWord = (n: number, text = "" as string) => {
+  if (text !== "") return text;
   let phrases = "";
   for (let i = 0; i < n; i++) {
     if (i === n - 1) phrases += faker.hacker.phrase();
@@ -58,7 +59,7 @@ export const calculateTextDifficulty = (position: number, text: string) => {
   var capitalLettersRegex = /[A-Z]/;
 
   text = text.slice(0, position);
-  let words = text.split(" ");
+  const words = text.split(" ");
 
   if (words[words.length - 1] == "" || words[words.length - 1] == " ") {
     words.pop();

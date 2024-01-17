@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useCountdown } from './useCountdown';
 import { useKeyDown } from './useKeyDown';
@@ -29,10 +29,13 @@ export const useSystem = () => {
   }
 
 
-  async function sendRequest(accuracy: number, letterMap: object, wpm: number, difficulty: number) {
+  async function sendRequest(accuracy: number, letterMap: object, wpm: number, difficulty: number, newTheme: string = "dune") {
+    
+    // console.log('THE NEW THEME OF THIS SHIT IS>', newTheme);
+
     const jsonObject = {
       "speed": wpm,
-      "theme": "dune",
+      "theme": newTheme,
       "difficulty_word": difficulty,
       "accuracy_global": accuracy,
       "accuracy_letters": getAccuracyLetters(letterMap as { [key: string]: any[] }),
@@ -54,7 +57,7 @@ export const useSystem = () => {
       }
     
       const data = await response.json();
-      //console.log(data);
+      console.log(data);
 
       return data;
     } catch (error) {
@@ -83,7 +86,11 @@ export const useSystem = () => {
   const [wordContainerFocused, setWordContainerFocused] = useState(false);
   const [time, setTime] = useState(() => getLocalStorageValue('time') || 15000);
   const { countdown, resetCountdown, startCountdown } = useCountdown(time);
-  const { word, updateWord, totalWord } = useWord(2);
+  const [ data, setData ] = useState("");
+  const [newTheme, setNewTheme] = useState("dune");
+
+  
+  const { word, updateWord, totalWord } = useWord(2, data);
   const {
     charTyped,
     typingState,
@@ -156,13 +163,17 @@ export const useSystem = () => {
 
     openModal('result');
     console.log('Before sendRequest');
-    sendRequest(accuracy, letterMap, wpm, difficulty).then((data) => {
-      console.log('After sendRequest');
-      console.log(data);
+
+
+    sendRequest(accuracy, letterMap, wpm, difficulty, newTheme).then((data) => {
+      console.log('GPT data', data.answer);
+      setData(data.answer);
     });
+
     restartTest();
     
   }
+
 
   return {
     charTyped,
@@ -184,5 +195,6 @@ export const useSystem = () => {
     checkCharacter,
     closeModal,
     openModal,
+    setNewTheme,
   };
 };
