@@ -20,8 +20,10 @@ export const useWord = (numberOfWords: number, text = "" as string) => {
     if (text !== "") {
       setWord(generateWord(numberOfWords, text) + ' ');
       setTotalWord(text);
-      eraseWord(text);
+      //eraseWord(text);
       console.log("TOTAL WORD", totalWord);
+      console.log(" WORD", word);
+
     }
   }, [text]);
 

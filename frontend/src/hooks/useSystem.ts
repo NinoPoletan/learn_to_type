@@ -32,7 +32,7 @@ export const useSystem = () => {
 
   async function sendRequest(accuracy: number, letterMap: object, wpm: number, difficulty: number, newTheme: string = "dune") {
     
-    // console.log('THE NEW THEME is>', newTheme);
+    console.log('THE NEW THEME is>', newTheme);
 
     const jsonObject = {
       "speed": wpm,

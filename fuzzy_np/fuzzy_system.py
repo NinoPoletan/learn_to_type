@@ -78,7 +78,7 @@ class FuzzyAcc:
 
 class FuzzyDifficulty:
     def __init__(self):
-        self.domain = SimpleDomain(0, 101)
+        self.domain = SimpleDomain(0, 200)
 
     def get_set_by_name(self, method_name):
         if hasattr(self, method_name):

@@ -77,7 +77,7 @@ def modify_text(text, difficulty):
     return ' '.join(words)
 
 app = Flask(__name__)
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = ''
 client = OpenAI(
     api_key=os.environ['OPENAI_API_KEY'],
 )
@@ -87,17 +87,17 @@ CORS(app)
 @app.route('/fuzzy_gtp', methods=['POST'])
 def fuzzy_gtp():
     try:
-        print(request)
-        input_data = request.get_json()
 
+        input_data = request.get_json()
+        print(input_data)
         output_word_diff, output_letter_dict = run_whole_control_system_json(input_data)
         theme = input_data['theme']
         print(output_word_diff, output_letter_dict)
 
         letters_to_improve = get_letters_to_improve(output_letter_dict)
 
-        question = "Generate a sentence where you use more of letters " + letters_to_improve + " on theme " + theme + ", the sentence should be 100 words long."
-        print("Question to OpenAI:", question)
+        question = "Generate a sentence where you use more of letters " + letters_to_improve + " on theme " + theme + ", the sentence should be 50 words long."
+        #print("Question to OpenAI:", question)
 
         response = client.chat.completions.create(
             model="gpt-3.5-turbo", messages=[{"role": "user", "content": question}],
@@ -105,10 +105,11 @@ def fuzzy_gtp():
 
         answer = response.choices[0].message.content
         print("status:", status)
+        #print("output_word_diff:", output_word_diff,"output_word_diff:", output_word_diff)
         modified_answer = modify_text(answer, output_word_diff)
-        print("Answer from GTP: ",answer)
-        print("status:", status)
-        print("Modified_answer: ", modified_answer)
+        #print("Answer from GTP: ",answer)
+        #print("status:", status)
+        #print("Modified_answer: ", modified_answer)
 
         return jsonify({'answer': modified_answer})
 
