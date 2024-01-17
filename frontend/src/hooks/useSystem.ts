@@ -19,12 +19,12 @@ import type { HistoryType } from '../types';
 export const useSystem = () => {
   // Constructing the JSON object
 
-  function getAccuracyLetters ( lm: object ) {
-    let letMap = Object.fromEntries(lm);
+  function getAccuracyLetters ( lm: { [key: string]: any[] } ) {
+    let letMap: { [key: string]: any } = { ...lm };
     for (let key in letMap) {
       letMap[key] = letMap[key][2];
     }
-
+  
     return letMap;
   }
 
@@ -35,7 +35,7 @@ export const useSystem = () => {
       "theme": "dune",
       "difficulty_word": difficulty,
       "accuracy_global": accuracy,
-      "accuracy_letters": getAccuracyLetters(letterMap),
+      "accuracy_letters": getAccuracyLetters(letterMap as { [key: string]: any[] }),
     };
 
     
@@ -46,6 +46,7 @@ export const useSystem = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(jsonObject),
+
       });
     
       if (!response.ok) {
@@ -154,7 +155,9 @@ export const useSystem = () => {
     });
 
     openModal('result');
+    console.log('Before sendRequest');
     sendRequest(accuracy, letterMap, wpm, difficulty).then((data) => {
+      console.log('After sendRequest');
       console.log(data);
     });
     restartTest();

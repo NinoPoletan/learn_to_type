@@ -20,7 +20,7 @@ const StyledSvg = styled.svg`
   color: ${({ theme }) => theme.text.title};
 `;
 
-const Header = ({ restart, openLoginModal }: HeaderProps) => {
+const Header = ({ restart }: HeaderProps) => {
   const { systemTheme } = useThemeContext();
 
   return (
@@ -97,14 +97,14 @@ const Header = ({ restart, openLoginModal }: HeaderProps) => {
       <div className='flex gap-4'>
         <ThemeDropdown />
         <Tooltip tooltipId='login'>
-          <div
+          <a
             data-tooltip-id='login'
             data-tooltip-content='Login'
             className='cursor-pointer'
-            onClick={() => openLoginModal('login')}
+            href='/auth/login'
           >
             <MdOutlineAccountCircle className='text-3xl' />
-          </div>
+          </a>
         </Tooltip>
       </div>
     </header>
