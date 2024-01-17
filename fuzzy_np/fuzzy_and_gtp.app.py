@@ -77,7 +77,7 @@ def modify_text(text, difficulty):
     return ' '.join(words)
 
 app = Flask(__name__)
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = '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'
 client = OpenAI(
     api_key=os.environ['OPENAI_API_KEY'],
 )
@@ -96,7 +96,7 @@ def fuzzy_gtp():
 
         letters_to_improve = get_letters_to_improve(output_letter_dict)
 
-        question = "Generate a sentence where you use more of letters " + letters_to_improve + " on theme " + theme + "."
+        question = "Generate a sentence where you use more of letters " + letters_to_improve + " on theme " + theme + ", the sentence should be 100 words long."
         print("Question to OpenAI:", question)
 
         response = client.chat.completions.create(

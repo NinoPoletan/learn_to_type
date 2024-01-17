@@ -187,19 +187,19 @@ export const calculateAccuracy = (expectedWord: string, typedWord: string) => {
   for (let i = 0; i < typedWord.length; i++) {
     if (typedWord[i] === expectedWord[i]) {
       correctChars++;
-      let value = letterMap.get(expectedWord[i]);
+      let value = letterMap.get(expectedWord[i].toLowerCase());
       if (value) {
         value[0]++;
         value[1]++;
         value[2] = (value[0] / value[1])* 100;
-        letterMap.set(expectedWord[i], value);
+        letterMap.set(expectedWord[i].toLowerCase(), value);
       }
     } else {
-      let value = letterMap.get(expectedWord[i]);
+      let value = letterMap.get(expectedWord[i].toLowerCase());
       if (value) {
         value[1]++;
         value[2] = (value[0] / value[1]) * 100;
-        letterMap.set(expectedWord[i], value);
+        letterMap.set(expectedWord[i].toLowerCase(), value);
       }
     }
   }

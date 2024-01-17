@@ -19,26 +19,27 @@ import type { HistoryType } from '../types';
 export const useSystem = () => {
   // Constructing the JSON object
 
-  function getAccuracyLetters ( lm: { [key: string]: any[] } ) {
-    let letMap: { [key: string]: any } = { ...lm };
-    for (let key in letMap) {
-      letMap[key] = letMap[key][2];
-    }
-  
-    return letMap;
-  }
+ function getAccuracyLetters(lm: Map<string, number[]>) {
+  // loop though the map and get the 3rd element of each array
+  let json: { [key: string]: number } = {};
+  lm.forEach((value, key) => {
+    json[key] = value[2];
+  });
+
+  return json;
+};
 
 
   async function sendRequest(accuracy: number, letterMap: object, wpm: number, difficulty: number, newTheme: string = "dune") {
     
-    // console.log('THE NEW THEME OF THIS SHIT IS>', newTheme);
+    // console.log('THE NEW THEME is>', newTheme);
 
     const jsonObject = {
       "speed": wpm,
       "theme": newTheme,
       "difficulty_word": difficulty,
       "accuracy_global": accuracy,
-      "accuracy_letters": getAccuracyLetters(letterMap as { [key: string]: any[] }),
+      "accuracy_letters": getAccuracyLetters(letterMap as Map<string, number[]>),
     };
 
     
