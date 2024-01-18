@@ -1,15 +1,6 @@
-import { useState } from 'react';
-import styled from 'styled-components';
-
-
-import { useClipboard } from '../hooks/useClipboard';
 import { useScreenShot } from '../hooks/useScreenShot';
 import { useThemeContext } from '../hooks/useTheme';
 
-import { IoCopy } from 'react-icons/io5';
-import { FaCameraRetro } from 'react-icons/fa';
-
-import Character from './Character';
 import ResultCard from './ResultCard';
 
 import type { Results } from '../types';
@@ -21,18 +12,9 @@ type ModalContentProps = {
   results: Results;
 };
 
-const StyledCopyButton = styled.button`
-  &:hover {
-    color: ${({ theme }) => theme.text.secondary};
-  }
-`;
 
 const ModalContent = ({ totalTime, history, results }: ModalContentProps) => {
-  const [copied, setCopied] = useState(false);
-  const [imageCopied, setImageCopied] = useState(false);
-
-  const { copyTextToClipboard } = useClipboard();
-  const { ref, image, getImage } = useScreenShot();
+  const { ref } = useScreenShot();
   const { systemTheme } = useThemeContext();
 
   function accRes(letterMap: Map<string, number[]>) {
