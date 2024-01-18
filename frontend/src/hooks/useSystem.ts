@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useCountdown } from './useCountdown';
 import { useKeyDown } from './useKeyDown';
@@ -17,9 +17,9 @@ import type { Results } from '../types';
 import type { HistoryType } from '../types';
 
 export const useSystem = () => {
-  // Constructing the JSON object
 
- function getAccuracyLetters(lm: Map<string, number[]>) {
+
+  function getAccuracyLetters(lm: Map<string, number[]>) {
   // loop though the map and get the 3rd element of each array
   let json: { [key: string]: number } = {};
   lm.forEach((value, key) => {
@@ -27,13 +27,10 @@ export const useSystem = () => {
   });
 
   return json;
-};
+  };
 
 
   async function sendRequest(accuracy: number, letterMap: object, wpm: number, difficulty: number, newTheme: string = "dune") {
-    
-    console.log('THE NEW THEME is>', newTheme);
-
     const jsonObject = {
       "speed": wpm,
       "theme": newTheme,
@@ -58,7 +55,7 @@ export const useSystem = () => {
       }
     
       const data = await response.json();
-      console.log(data);
+      //console.log(data);
 
       return data;
     } catch (error) {
@@ -163,11 +160,8 @@ export const useSystem = () => {
     });
 
     openModal('result');
-    console.log('Before sendRequest');
-
-
     sendRequest(accuracy, letterMap, wpm, difficulty, newTheme).then((data) => {
-      console.log('GPT data', data.answer);
+      //console.log('GPT data', data.answer);
       setData(data.answer);
     });
 

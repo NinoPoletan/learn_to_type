@@ -8,12 +8,16 @@ import random
 import string
 
 
+#def get_letters_to_improve(letter_difficulty):
+#    letters_to_improve = ""
+#    for letter, difficulty in letter_difficulty.items():
+#        if difficulty == "improve":
+#            letters_to_improve += letter + ", "
+#    return letters_to_improve
+
 def get_letters_to_improve(letter_difficulty):
-    letters_to_improve = ""
-    for letter, difficulty in letter_difficulty.items():
-        if difficulty == "improve":
-            letters_to_improve += letter + ", "
-    return letters_to_improve
+    letters_to_improve = [letter for letter, difficulty in letter_difficulty.items() if difficulty == "improve" and letter.isalpha()]
+    return ', '.join(letters_to_improve[:2])
 
 
 def already_lower(word):
@@ -90,6 +94,7 @@ def fuzzy_gtp():
 
         input_data = request.get_json()
         print(input_data)
+        
         output_word_diff, output_letter_dict = run_whole_control_system_json(input_data)
         theme = input_data['theme']
         print(output_word_diff, output_letter_dict)
@@ -97,7 +102,7 @@ def fuzzy_gtp():
         letters_to_improve = get_letters_to_improve(output_letter_dict)
 
         question = "Generate a sentence where you use more of letters " + letters_to_improve + " on theme " + theme + ", the sentence should be 50 words long."
-        #print("Question to OpenAI:", question)
+        print("Question to OpenAI:", question)
 
         response = client.chat.completions.create(
             model="gpt-3.5-turbo", messages=[{"role": "user", "content": question}],

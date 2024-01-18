@@ -21,8 +21,8 @@ export const useWord = (numberOfWords: number, text = "" as string) => {
       setWord(generateWord(numberOfWords, text) + ' ');
       setTotalWord(text);
       //eraseWord(text);
-      console.log("TOTAL WORD", totalWord);
-      console.log(" WORD", word);
+      //console.log("TOTAL WORD", totalWord);
+      //console.log(" WORD", word);
 
     }
   }, [text]);
