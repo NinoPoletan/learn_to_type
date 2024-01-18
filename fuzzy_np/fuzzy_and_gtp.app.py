@@ -81,7 +81,7 @@ def modify_text(text, difficulty):
     return ' '.join(words)
 
 app = Flask(__name__)
-os.environ['OPENAI_API_KEY'] = ''
+os.environ['OPENAI_API_KEY'] = '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'
 client = OpenAI(
     api_key=os.environ['OPENAI_API_KEY'],
 )

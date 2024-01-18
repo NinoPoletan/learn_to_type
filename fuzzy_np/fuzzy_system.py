@@ -243,28 +243,47 @@ def word_difficulty_control_system(S, D_W, ACC_G):
 
     rules = {
         'easier': max(
-            min(s.slow_(S), d.medium_(D_W)),
-            min(a.bad_(ACC_G), d.medium_(D_W)),
+            min(d.easy_(D_W), s.slow_(S), a.bad_(ACC_G)),
+            min(d.easy_(D_W), s.slow_(S), a.good_(ACC_G)),
 
-            min(s.slow_(S), d.hard_(D_W)),
-            min(a.bad_(ACC_G), d.hard_(D_W)),
+            min(d.medium_(D_W), s.slow_(S), a.bad_(ACC_G)),
+            min(d.medium_(D_W), s.slow_(S), a.good_(ACC_G)),
+            min(d.medium_(D_W), s.medium_speed_(S), a.bad_(ACC_G)),
 
-            min(s.slow_(S), d.very_hard_(D_W)),
-            min(a.bad_(ACC_G), d.very_hard_(D_W)),
+
+            min(d.hard_(D_W), s.slow_(S), a.bad_(ACC_G)),
+            min(d.hard_(D_W), s.slow_(S), a.good_(ACC_G)),
+            min(d.hard_(D_W), s.medium_speed_(S), a.bad_(ACC_G)),
+
+
+            min(d.very_hard_(D_W), s.slow_(S), a.bad_(ACC_G)),
+            min(d.very_hard_(D_W), s.slow_(S), a.good_(ACC_G)),
+            min(d.hard_(D_W), s.medium_speed_(S), a.bad_(ACC_G)),
+
+
         ),
         'stay': max(
-            0,
-            min(s.medium_speed_(S), d.medium_(D_W)),
-            a.good_(ACC_G),
+            0.1,
+            0.1,
+            #min(d.very_easy_(D_W), s.medium_speed_(S), a.good_(ACC_G)),
+            #min(d.easy_(D_W), s.medium_speed_(S), a.good_(ACC_G)),
+            #min(d.medium_(D_W), s.medium_speed_(S), a.good_(ACC_G)),
+            #min(d.hard_(D_W), s.medium_speed_(S), a.good_(ACC_G)),
+            #min(d.very_hard_(D_W), s.medium_speed_(S), a.good_(ACC_G)),
         ),
         'harder': max(
-            min(s.fast_(S), d.very_easy_(D_W)),
-            min(a.excellent_(ACC_G), d.very_easy_(D_W)),
+            min(d.very_easy_(D_W), s.fast_(S), a.good_(ACC_G)),
+            min(d.very_easy_(D_W), s.fast_(S), a.excellent_(ACC_G)),
+            min(d.very_easy_(D_W), s.medium_speed_(S), a.excellent_(ACC_G)),
 
-            min(s.fast_(S), d.easy_(D_W)),
-            min(a.excellent_(ACC_G), d.easy_(D_W)),
+            min(d.easy_(D_W), s.fast_(S), a.good_(ACC_G)),
+            min(d.easy_(D_W), s.fast_(S), a.excellent_(ACC_G)),
+            min(d.easy_(D_W), s.medium_speed_(S), a.excellent_(ACC_G)),
 
-            min(a.excellent_(ACC_G), d.medium_(D_W)),
+            min(d.medium_(D_W), s.fast_(S), a.excellent_(ACC_G)),
+            min(d.medium_(D_W), s.medium_speed_(S), a.excellent_(ACC_G)),
+
+            min(d.hard_(D_W), s.fast_(S), a.excellent_(ACC_G)),
         ),
     }
     od = FuzzyOutputDifficulty()
