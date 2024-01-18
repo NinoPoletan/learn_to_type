@@ -51,19 +51,19 @@ class FuzzyAcc:
             raise AttributeError(f"No method named {method_name} found in {self.__class__.__name__}")
 
     def bad(self):
-        a = 40
-        b = 50
+        a = 30
+        b = 42
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.i_function(a, b))
 
     def good(self):
-        a = 45
-        b = 65
-        c = 85
+        a = 40
+        b = 67
+        c = 92
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.lambda_function(a, b, c))
 
     def excellent(self):
-        a = 80
-        b = 90
+        a = 90
+        b = 95
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.gamma_function(a, b))
 
     def bad_(self, value):
@@ -78,7 +78,7 @@ class FuzzyAcc:
 
 class FuzzyDifficulty:
     def __init__(self):
-        self.domain = SimpleDomain(0, 101)
+        self.domain = SimpleDomain(30, 200)
 
     def get_set_by_name(self, method_name):
         if hasattr(self, method_name):
@@ -88,31 +88,31 @@ class FuzzyDifficulty:
             raise AttributeError(f"No method named {method_name} found in {self.__class__.__name__}")
 
     def very_easy(self):
-        a = 120
-        b = 122
+        a = 50
+        b = 52
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.i_function(a, b))
 
     def easy(self):
-        a = 118
-        b = 130
-        c = 142
+        a = 50
+        b = 65
+        c = 80
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.lambda_function(a, b, c))
 
     def medium(self):
-        a = 138
-        b = 150
-        c = 162
+        a = 75
+        b = 90
+        c = 105
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.lambda_function(a, b, c))
 
     def hard(self):
-        a = 158
-        b = 170
-        c = 182
+        a = 100
+        b = 125
+        c = 150
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.lambda_function(a, b, c))
 
     def very_hard(self):
-        a = 178
-        b = 180
+        a = 145
+        b = 160
         return CalculatedFuzzySet(self.domain, StandardFuzzySets.gamma_function(a, b))
 
     def very_easy_(self, value):
@@ -243,17 +243,47 @@ def word_difficulty_control_system(S, D_W, ACC_G):
 
     rules = {
         'easier': max(
-            min(s.slow_(S), d.medium_(D_W)),
-            min(a.bad_(ACC_G), d.medium_(D_W)),
+            min(d.easy_(D_W), s.slow_(S), a.bad_(ACC_G)),
+            min(d.easy_(D_W), s.slow_(S), a.good_(ACC_G)),
+
+            min(d.medium_(D_W), s.slow_(S), a.bad_(ACC_G)),
+            min(d.medium_(D_W), s.slow_(S), a.good_(ACC_G)),
+            min(d.medium_(D_W), s.medium_speed_(S), a.bad_(ACC_G)),
+
+
+            min(d.hard_(D_W), s.slow_(S), a.bad_(ACC_G)),
+            min(d.hard_(D_W), s.slow_(S), a.good_(ACC_G)),
+            min(d.hard_(D_W), s.medium_speed_(S), a.bad_(ACC_G)),
+
+
+            min(d.very_hard_(D_W), s.slow_(S), a.bad_(ACC_G)),
+            min(d.very_hard_(D_W), s.slow_(S), a.good_(ACC_G)),
+            min(d.hard_(D_W), s.medium_speed_(S), a.bad_(ACC_G)),
+
 
         ),
         'stay': max(
-            min(s.medium_speed_(S), d.medium_(D_W)),
-            a.good_(ACC_G),
+            0.1,
+            0.1,
+            #min(d.very_easy_(D_W), s.medium_speed_(S), a.good_(ACC_G)),
+            #min(d.easy_(D_W), s.medium_speed_(S), a.good_(ACC_G)),
+            #min(d.medium_(D_W), s.medium_speed_(S), a.good_(ACC_G)),
+            #min(d.hard_(D_W), s.medium_speed_(S), a.good_(ACC_G)),
+            #min(d.very_hard_(D_W), s.medium_speed_(S), a.good_(ACC_G)),
         ),
         'harder': max(
-            min(s.fast_(S), d.very_easy_(D_W)),
-            min(a.excellent_(ACC_G), d.very_easy_(D_W)),
+            min(d.very_easy_(D_W), s.fast_(S), a.good_(ACC_G)),
+            min(d.very_easy_(D_W), s.fast_(S), a.excellent_(ACC_G)),
+            min(d.very_easy_(D_W), s.medium_speed_(S), a.excellent_(ACC_G)),
+
+            min(d.easy_(D_W), s.fast_(S), a.good_(ACC_G)),
+            min(d.easy_(D_W), s.fast_(S), a.excellent_(ACC_G)),
+            min(d.easy_(D_W), s.medium_speed_(S), a.excellent_(ACC_G)),
+
+            min(d.medium_(D_W), s.fast_(S), a.excellent_(ACC_G)),
+            min(d.medium_(D_W), s.medium_speed_(S), a.excellent_(ACC_G)),
+
+            min(d.hard_(D_W), s.fast_(S), a.excellent_(ACC_G)),
         ),
     }
     od = FuzzyOutputDifficulty()

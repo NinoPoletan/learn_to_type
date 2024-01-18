@@ -17,25 +17,26 @@ import type { Results } from '../types';
 import type { HistoryType } from '../types';
 
 export const useSystem = () => {
-  // Constructing the JSON object
-
-  function getAccuracyLetters ( lm: { [key: string]: any[] } ) {
-    let letMap: { [key: string]: any } = { ...lm };
-    for (let key in letMap) {
-      letMap[key] = letMap[key][2];
-    }
-  
-    return letMap;
-  }
 
 
-  async function sendRequest(accuracy: number, letterMap: object, wpm: number, difficulty: number) {
+  function getAccuracyLetters(lm: Map<string, number[]>) {
+  // loop though the map and get the 3rd element of each array
+  let json: { [key: string]: number } = {};
+  lm.forEach((value, key) => {
+    json[key] = value[2];
+  });
+
+  return json;
+  };
+
+
+  async function sendRequest(accuracy: number, letterMap: object, wpm: number, difficulty: number, newTheme: string = "dune") {
     const jsonObject = {
       "speed": wpm,
-      "theme": "dune",
+      "theme": newTheme,
       "difficulty_word": difficulty,
       "accuracy_global": accuracy,
-      "accuracy_letters": getAccuracyLetters(letterMap as { [key: string]: any[] }),
+      "accuracy_letters": getAccuracyLetters(letterMap as Map<string, number[]>),
     };
 
     
@@ -46,6 +47,7 @@ export const useSystem = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(jsonObject),
+
       });
     
       if (!response.ok) {
@@ -82,7 +84,11 @@ export const useSystem = () => {
   const [wordContainerFocused, setWordContainerFocused] = useState(false);
   const [time, setTime] = useState(() => getLocalStorageValue('time') || 15000);
   const { countdown, resetCountdown, startCountdown } = useCountdown(time);
-  const { word, updateWord, totalWord } = useWord(2);
+  const [ data, setData ] = useState("");
+  const [newTheme, setNewTheme] = useState("dune");
+
+  
+  const { word, updateWord, totalWord } = useWord(2, data);
   const {
     charTyped,
     typingState,
@@ -154,12 +160,15 @@ export const useSystem = () => {
     });
 
     openModal('result');
-    sendRequest(accuracy, letterMap, wpm, difficulty).then((data) => {
-      console.log(data);
+    sendRequest(accuracy, letterMap, wpm, difficulty, newTheme).then((data) => {
+      //console.log('GPT data', data.answer);
+      setData(data.answer);
     });
+
     restartTest();
     
   }
+
 
   return {
     charTyped,
@@ -181,5 +190,6 @@ export const useSystem = () => {
     checkCharacter,
     closeModal,
     openModal,
+    setNewTheme,
   };
 };

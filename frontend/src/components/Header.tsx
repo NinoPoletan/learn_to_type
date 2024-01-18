@@ -1,16 +1,11 @@
-import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useThemeContext } from '../hooks/useTheme';
-
 import { MdOutlineAccountCircle } from "react-icons/md";
-import { BsKeyboardFill } from 'react-icons/bs';
-
 import Tooltip from './Tooltip';
 import ThemeDropdown from './ThemeDropdown';
+import {useEffect, useState} from 'react';
 
-type HeaderProps = {
-  restart: () => void;
-};
+
 
 const StyledSvg = styled.svg`
   width: 50px;
@@ -46,7 +41,8 @@ const deleteCookie = (name: string): void => {
   document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-const Header = ({ restart }: HeaderProps) => {
+const Header = (props: any) => {
+  const { changeTheme } = props;
   const { systemTheme } = useThemeContext();
   const [userCookieData, setUserCookieData] = useState<any | null>(null);
 
@@ -54,6 +50,11 @@ const Header = ({ restart }: HeaderProps) => {
     const userData = decodeCookieValue('user');
     setUserCookieData(userData);
   }, []);
+
+  const handleThemeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    changeTheme(e.target.value);
+  }
+
 
   return (
     <header className='flex items-center justify-between py-8'>
@@ -111,20 +112,18 @@ const Header = ({ restart }: HeaderProps) => {
         <h1
           className={`font-mono text-2xl font-bold hover:underline lg:text-3xl`}
         >
-          Minted.
+          Minted
         </h1>
-        <Tooltip tooltipId='keyboard'>
-          <div
-            className='ml-4'
-            onClick={() => {
-              restart();
-            }}
-            data-tooltip-id='keyboard'
-            data-tooltip-content='Restart'
-          >
-            <BsKeyboardFill className='text-2xl lg:text-3xl ' />
-          </div>
-        </Tooltip>
+      </div>
+      <div>
+        <form>
+          <input
+            className='bg-transparent border-b-2 border-gray-300 focus:outline-none focus:border-gray-500 w-[300px] text-xl'
+            type='text'
+            placeholder='Choose a theme'
+            onChange={handleThemeChange}
+          />
+        </form>
       </div>
       <div className='flex gap-4'>
         <ThemeDropdown />
